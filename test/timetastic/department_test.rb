@@ -22,4 +22,12 @@ class TimetasticDepartmentTest < Minitest::Test
       assert result.kind_of?(Array)
     end
   end
+
+  def test_it_gives_back_all_departments_with_filters
+    VCR.use_cassette('all_departments_filtered') do
+      department = Timetastic::Department.all({},{'name' => 'IT'})
+      assert_equal 1, department.size
+      assert_equal 84205, department[0].id
+    end
+  end
 end

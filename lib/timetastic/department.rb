@@ -17,11 +17,14 @@ module Timetastic
       @bankHolidaySetId = attributes["bankHolidaySetId"]
     end
 
-    def self.all(*args)
+    def self.all(options={},filters={})
       conn = Faraday.new
       conn.authorization :Bearer, ENV["TIMETASTIC_API_TOKEN"]
-      response = conn.get("#{API_URL}/departments")
+      response = conn.get("#{API_URL}/departments",options)
       departments = JSON.parse(response.body)
+      filters.each do |k,v|
+        departments = departments.select { |department| department[k] == v }
+      end
       departments.map { |attributes| new(attributes) }
     end
 

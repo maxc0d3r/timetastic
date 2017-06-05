@@ -26,11 +26,16 @@ module Timetastic
       @nextYearAllowance = attributes["nextYearAllowance"]
     end
 
-    def self.all(*args)
+    def self.all(options={},filters={})
       conn = Faraday.new
       conn.authorization :Bearer, ENV["TIMETASTIC_API_TOKEN"]
-      response = conn.get("#{API_URL}/users")
+      response = conn.get("#{API_URL}/users",options)
       users = JSON.parse(response.body)
+      unless filters == nil
+        filters.each do |k,v|
+          users = users.select { |user| user[k] == v }
+        end
+      end
       users.map { |attributes| new(attributes) }
     end
 

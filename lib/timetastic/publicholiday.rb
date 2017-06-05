@@ -12,11 +12,14 @@ module Timetastic
       @countryCode = attributes["countryCode"]
     end
 
-    def self.all(*args)
+    def self.all(options={},filters={})
       conn = Faraday.new
       conn.authorization :Bearer, ENV["TIMETASTIC_API_TOKEN"]
-      response = conn.get("#{API_URL}/publicholidays")
+      response = conn.get("#{API_URL}/publicholidays",options)
       publicholidays = JSON.parse(response.body)
+      filters.each do |k,v|
+        publicholidays = publicholidays.select { |publicholiday| publicholiday[k] == v }
+      end
       publicholidays.map { |attributes| new(attributes) }
     end
 

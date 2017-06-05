@@ -22,4 +22,11 @@ class TimetasticPublicHolidayTest < Minitest::Test
       assert result.kind_of?(Array)
     end
   end
+
+  def test_it_gives_back_all_departments_with_filters
+    VCR.use_cassette('all_publicholidays_filtered') do
+      holiday = Timetastic::PublicHoliday.all({},{'date' => '2017-08-15T00:00:00'})
+      assert_equal "Independence Day", holiday[0].name
+    end
+  end
 end

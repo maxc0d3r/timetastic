@@ -22,4 +22,11 @@ class TimetasticUserTest < Minitest::Test
       assert result.kind_of?(Array)
     end
   end
+
+  def test_it_gives_back_all_users_with_filters
+    VCR.use_cassette('all_users_filtered') do
+      result = Timetastic::User.all({:departmentId => 83865},{'email' => 'mail2mayank@gmail.com'})
+      assert result.kind_of?(Array)
+    end
+  end
 end

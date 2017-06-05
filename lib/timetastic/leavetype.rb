@@ -14,12 +14,15 @@ module Timetastic
       @color = attributes["color"]
     end
 
-    def self.all(*args)
+    def self.all(options={},filters={})
       conn = Faraday.new
       conn.authorization :Bearer, ENV["TIMETASTIC_API_TOKEN"]
-      response = conn.get("#{API_URL}/leavetypes")
+      response = conn.get("#{API_URL}/leavetypes",options)
       leavetypes = JSON.parse(response.body)
-      leavetypes.map { |attributes| new(attributes) }
+      filters.each do |k,v|
+        leavetypes = leavetypes.select { |leavetype| leavetype[k] == v }
+      end
+      leavetype.map { |attributes| new(attributes) }
     end
 
     def self.find(id)
