@@ -22,7 +22,7 @@ module Timetastic
       filters.each do |k,v|
         leavetypes = leavetypes.select { |leavetype| leavetype[k] == v }
       end
-      leavetype.map { |attributes| new(attributes) }
+      leavetypes.map { |attributes| new(attributes) }
     end
 
     def self.find(id)

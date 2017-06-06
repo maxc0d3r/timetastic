@@ -25,4 +25,11 @@ class TimetasticHolidayTest < Minitest::Test
       assert result.kind_of?(Array)
     end
   end
+
+  def test_it_books_a_holiday
+    VCR.use_cassette('book_holiday') do
+      result = Timetastic::Holiday.book('2017-07-20','2017-07-21','AM','PM','Sick','Holiday','mail2mayank@gmail.com')
+      assert_equal true, result["success"]
+    end
+  end
 end
