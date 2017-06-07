@@ -47,8 +47,9 @@ module Timetastic
       conn.authorization :Bearer, ENV["TIMETASTIC_API_TOKEN"]
       user_id = Timetastic::User.all({},{'email' => email}).first.id
       leave_type_id = Timetastic::LeaveType.all({},{'name' => leave_type}).first.id
-      post_request = { :from => from_date, :to => to_date, :startTime => from_time, :endTime => to_time, :reason => reason, :userOrDepartmentId => user_id, :bookFor => "User", :leaveTypeId => leave_type_id}
+      post_request = { :from => from_date, :to => to_date, :fromTime => from_time, :toTime => to_time, :reason => reason, :userOrDepartmentId => user_id, :bookFor => "User", :leaveTypeId => leave_type_id}
       response = conn.post("#{API_URL}/holidays", post_request)
+      puts response.body
       json_response = JSON.parse(response.body)
     end
   end
