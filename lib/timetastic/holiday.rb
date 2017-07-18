@@ -26,11 +26,18 @@ module Timetastic
     def self.all(options={},filters={})
       conn = Faraday.new
       conn.authorization :Bearer, ENV["TIMETASTIC_API_TOKEN"]
-      response = conn.get("#{API_URL}/holidays")
-      holidays = JSON.parse(response.body)["holidays"]
-      filters.each do |k,v|
-        holidays = holidays.select { |holiday| holiday[k] == v }
+      query_string = ''
+      url = "#{API_URL}/holidays"
+      if filters.length > 0
+        url = url+'?'
+        query_string=''
+        filters.each do |k,v|
+          query_string = query_string+"#{k}=#{v}&"
+        end
+        url = url + query_string
       end
+      response = conn.get(url)
+      holidays = JSON.parse(response.body)["holidays"]
       holidays.map { |attributes| new(attributes) }
     end
 
