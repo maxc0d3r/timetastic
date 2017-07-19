@@ -23,19 +23,17 @@ module Timetastic
       @leaveType = attributes["leaveType"]
     end
 
-    def self.all(options={},filters={})
+    def self.all(options={},filters=[])
       conn = Faraday.new
       conn.authorization :Bearer, ENV["TIMETASTIC_API_TOKEN"]
       query_string = ''
       url = "#{API_URL}/holidays"
       if filters.length > 0
         url = url+'?'
-        query_string=''
-        filters.each do |k,v|
-          query_string = query_string+"#{k}=#{v}&"
-        end
+        query_string=(filters[0 ... -1].each { |s| s << "&" } << filters[-1]).join('')
         url = url + query_string
       end
+      puts "url = #{url}"
       response = conn.get(url)
       holidays = JSON.parse(response.body)["holidays"]
       holidays.map { |attributes| new(attributes) }
